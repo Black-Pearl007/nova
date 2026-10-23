@@ -36,6 +36,9 @@ Download or clone the repo and open `index.html` in a browser. To retrain the mo
 
 Nova is a friendly bot, not a doctor or therapist. For serious problems, please talk to a trusted person or a professional.
 
+<img width="1911" height="856" alt="Screenshot 2026-10-23 160818" src="https://github.com/user-attachments/assets/5dbfcecc-b3de-4557-b679-c94ac2ca20a5" />
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
