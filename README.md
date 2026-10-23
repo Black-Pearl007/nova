@@ -2,10 +2,6 @@
 
 Nova is a friendly chatbot that runs entirely in your browser. It chats like a friend, checks how you feel, plays games, gives advice, suggests music and can talk out loud. No install, no server, no API key. Just open `index.html`.
 
-![Screenshot of Nova](docs/screenshot.png)
-
-
-
 ## Features
 
 - **Friendly chat:** mood check-in, "let me vent" listening, daily check-in and a private journal
