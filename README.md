@@ -4,7 +4,7 @@ Nova is a friendly chatbot that runs entirely in your browser. It chats like a f
 
 ![Screenshot of Nova](docs/screenshot.png)
 
-**Live demo:** https://YOUR-USERNAME.github.io/school-chatbot/
+
 
 ## Features
 
