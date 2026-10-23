@@ -1,0 +1,90 @@
+text,true,model_pred,model_confidence,baseline_pred
+morning!,greeting,greeting,0.56,unknown
+heya,greeting,greeting,0.56,unknown
+well hello there,greeting,greeting,0.76,unknown
+evening nova,greeting,greeting,0.62,unknown
+greetings,greeting,happy,0.11,unknown
+you've been a big help,thanks,how_are_you,0.13,unknown
+i appreciate you,thanks,thanks,0.75,unknown
+cheers,thanks,thanks,0.31,unknown
+tysm,thanks,thanks,0.15,unknown
+talk later,goodbye,goodbye,0.85,unknown
+goodnight,goodbye,goodbye,0.37,unknown
+i'm leaving now,goodbye,goodbye,0.2,unknown
+cya,goodbye,greeting,0.16,unknown
+how's your day going,how_are_you,how_are_you,0.9,unknown
+you doing alright?,how_are_you,how_are_you,0.63,unknown
+how are u today,how_are_you,how_are_you,0.88,unknown
+what are you up to,how_are_you,how_are_you,0.87,unknown
+how's life treating you,how_are_you,how_are_you,0.94,unknown
+how you been,how_are_you,how_are_you,0.92,unknown
+i just feel so low lately,sad,sad,0.34,unknown
+i've had a really bad day and want to cry,sad,sad,0.77,unknown
+my heart hurts,sad,sad,0.32,unknown
+feeling kind of hopeless,sad,sad,0.59,unknown
+i'm not okay,sad,happy,0.14,unknown
+everything feels gloomy,sad,sad,0.68,unknown
+i'm drowning in assignments,stressed,anxious,0.13,unknown
+there's just too much on my plate,stressed,stressed,0.41,unknown
+i can't handle this workload,stressed,stressed,0.58,unknown
+my schedule is insane,stressed,sleep_help,0.16,unknown
+work is overwhelming me,stressed,stressed,0.49,unknown
+i keep overthinking everything,anxious,stressed,0.16,unknown
+i'm on edge all the time,anxious,happy,0.2,unknown
+i'm terrified of what's coming,anxious,how_are_you,0.14,unknown
+i feel panicky,anxious,anxious,0.36,unknown
+i'm seething,angry,angry,0.25,unknown
+that really got on my nerves,angry,happy,0.26,unknown
+i'm so fed up with people,angry,angry,0.19,unknown
+my blood is boiling,angry,stressed,0.16,unknown
+i'm livid,angry,happy,0.31,unknown
+i've got nobody to hang out with,lonely,lonely,0.3,unknown
+i feel so left out of everything,lonely,lonely,0.39,unknown
+no one ever texts me,lonely,lonely,0.68,unknown
+i'm by myself all the time,lonely,happy,0.17,unknown
+i wish i had someone to talk to,lonely,lonely,0.39,unknown
+i feel isolated from everyone,lonely,lonely,0.94,unknown
+nobody invites me anywhere,lonely,lonely,0.65,unknown
+i have zero things to do,bored,stressed,0.24,unknown
+life is so dull today,bored,happy,0.29,unknown
+keep me entertained please,bored,breathing,0.16,unknown
+i'm dying of boredom,bored,bored,0.52,unknown
+nothing exciting is happening,bored,bored,0.44,unknown
+i've got too much free time,bored,stressed,0.33,unknown
+need something to pass the time,bored,bored,0.37,unknown
+"guess what, i got in!",happy,happy,0.28,unknown
+i'm on cloud nine,happy,study_help,0.17,unknown
+i couldn't be happier,happy,happy,0.14,unknown
+something wonderful happened today,happy,bored,0.29,unknown
+i aced my test,happy,career_help,0.19,unknown
+yay i finished my project,happy,career_help,0.14,unknown
+"i'm so pumped, things are going well",happy,how_are_you,0.3,unknown
+got any good tracks for me,music,joke,0.31,unknown
+say something hilarious,joke,joke,0.17,unknown
+tell me a pun,joke,joke,0.46,unknown
+try to make me giggle,joke,joke,0.49,unknown
+test my knowledge with questions,game,game,0.22,unknown
+give me a brain teaser,game,game,0.23,unknown
+i feel like playing something,game,music,0.53,unknown
+challenge me with a puzzle,game,game,0.5,unknown
+what's the best way to prepare for tests,study_help,study_help,0.49,unknown
+i can't concentrate while reading my notes,study_help,study_help,0.26,unknown
+"i have exams next week, what should i do",study_help,career_help,0.46,study_help
+ways to learn quicker,study_help,study_help,0.34,unknown
+is a masters degree worth it,career_help,happy,0.16,career_help
+tips to improve my cv,career_help,study_help,0.39,unknown
+how do i land an internship,career_help,career_help,0.58,unknown
+what path should i take after graduation,career_help,career_help,0.49,unknown
+why am i not able to fall asleep,sleep_help,sleep_help,0.72,unknown
+i toss and turn all night,sleep_help,sleep_help,0.36,unknown
+my body clock is all off,sleep_help,goodbye,0.17,unknown
+"help, still awake at 3am",sleep_help,sleep_help,0.37,unknown
+need tips for a good night's rest,sleep_help,career_help,0.26,goodbye
+i've been sleeping badly,sleep_help,sleep_help,0.44,unknown
+how do i stop staying up so late,sleep_help,how_are_you,0.21,unknown
+i need to take some deep breaths,breathing,breathing,0.54,unknown
+walk me through a relaxing exercise,breathing,breathing,0.76,unknown
+can you help me settle my nerves,breathing,breathing,0.27,unknown
+do a calming exercise with me,breathing,breathing,0.81,unknown
+i want to unwind and breathe,breathing,breathing,0.49,unknown
+guide me to relax,breathing,breathing,0.81,unknown

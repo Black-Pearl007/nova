@@ -1,0 +1,289 @@
+text,label
+hello,greeting
+hi there,greeting
+hey,greeting
+hey nova,greeting
+good morning,greeting
+good evening,greeting
+hiya,greeting
+yo,greeting
+hello friend,greeting
+hola,greeting
+vanakkam,greeting
+namaste,greeting
+howdy,greeting
+good afternoon,greeting
+hi hi,greeting
+heyy,greeting
+thanks,thanks
+thank you so much,thanks
+thx,thanks
+that helped thanks,thanks
+appreciate it,thanks
+many thanks,thanks
+thank you nova,thanks
+thanks a lot,thanks
+ty,thanks
+cheers for that,thanks
+that was helpful,thanks
+really appreciate your help,thanks
+thanks buddy,thanks
+thank u,thanks
+much obliged,thanks
+great thanks,thanks
+bye,goodbye
+goodbye,goodbye
+see you later,goodbye
+good night,goodbye
+gtg,goodbye
+talk to you tomorrow,goodbye
+catch you later,goodbye
+i have to go now,goodbye
+bye bye,goodbye
+see ya,goodbye
+i'm off now,goodbye
+signing off,goodbye
+take care bye,goodbye
+night nova,goodbye
+later,goodbye
+ok bye,goodbye
+how are you,how_are_you
+how are you doing,how_are_you
+how r u,how_are_you
+what's up,how_are_you
+how's it going,how_are_you
+how do you feel today,how_are_you
+are you doing okay,how_are_you
+how have you been,how_are_you
+you good?,how_are_you
+how's your day,how_are_you
+what's new with you,how_are_you
+sup,how_are_you
+how are things,how_are_you
+how is life,how_are_you
+hows everything,how_are_you
+are you well,how_are_you
+i feel sad,sad
+i'm so sad today,sad
+i feel really down,sad
+feeling depressed,sad
+i want to cry,sad
+my heart is broken,sad
+i feel low,sad
+everything feels hopeless,sad
+i'm so unhappy,sad
+i've been crying all day,sad
+feeling miserable,sad
+i'm upset and sad,sad
+i feel empty today,sad
+life feels heavy,sad
+i'm feeling blue,sad
+nothing is going right and i'm heartbroken,sad
+i'm so stressed,stressed
+too much pressure,stressed
+i feel overwhelmed,stressed
+i'm burnt out,stressed
+so much work i can't handle,stressed
+deadlines are killing me,stressed
+i feel under a lot of pressure,stressed
+stressed out of my mind,stressed
+my workload is crushing,stressed
+can't cope with everything,stressed
+i have too many things to do,stressed
+i'm swamped,stressed
+feeling really tense,stressed
+it's all too much,stressed
+burnout is real,stressed
+so many deadlines,stressed
+i feel anxious,anxious
+i'm so worried,anxious
+i'm nervous about tomorrow,anxious
+feeling scared,anxious
+my anxiety is bad,anxious
+i'm panicking,anxious
+i can't stop worrying,anxious
+i feel really afraid,anxious
+my heart is racing and i'm nervous,anxious
+i'm freaking out,anxious
+worried sick,anxious
+i have anxiety,anxious
+i feel uneasy,anxious
+scared about the results,anxious
+nervous about my interview,anxious
+butterflies in my stomach,anxious
+i'm so angry,angry
+i'm furious,angry
+this is so annoying,angry
+i'm really mad,angry
+i'm frustrated with everything,angry
+i can't stand this,angry
+so irritated right now,angry
+i'm fuming,angry
+he made me so mad,angry
+i feel rage,angry
+i am really annoyed,angry
+this makes me so angry,angry
+i'm sick of this,angry
+i lost my temper,angry
+i'm frustrated and angry,angry
+ugh i'm so mad,angry
+i feel lonely,lonely
+i have no one to talk to,lonely
+i'm all alone,lonely
+i feel so alone,lonely
+nobody cares about me,lonely
+i don't have any friends,lonely
+i feel isolated,lonely
+i miss having people around,lonely
+no one understands me,lonely
+i feel left out,lonely
+i'm lonely tonight,lonely
+i feel invisible,lonely
+everyone has someone except me,lonely
+i have nobody,lonely
+i feel disconnected from everyone,lonely
+i have no friends here,lonely
+i'm bored,bored
+nothing to do,bored
+so boring today,bored
+i have nothing to do,bored
+i'm so bored,bored
+entertain me,bored
+i need something to do,bored
+this is boring,bored
+i'm bored out of my mind,bored
+give me something fun,bored
+there's nothing interesting going on,bored
+i'm free and bored,bored
+i feel bored,bored
+what should i do i'm bored,bored
+i've got nothing to do right now,bored
+so bored right now,bored
+i'm so happy,happy
+i got the job,happy
+i passed my exam,happy
+great news,happy
+i'm really excited,happy
+today was awesome,happy
+i feel amazing,happy
+i got selected,happy
+good news i won,happy
+i'm over the moon,happy
+best day ever,happy
+i'm feeling fantastic,happy
+i did it,happy
+i'm thrilled,happy
+life is great,happy
+i got promoted,happy
+play some music,music
+suggest me a song,music
+i want to listen to music,music
+recommend a playlist,music
+play something relaxing,music
+songs for studying,music
+play some tamil songs,music
+give me workout music,music
+what should i listen to,music
+put on some tunes,music
+i need a good playlist,music
+music for a road trip,music
+can you suggest songs,music
+play me something chill,music
+i'd like some lofi beats,music
+i feel like listening to songs,music
+tell me a joke,joke
+make me laugh,joke
+say something funny,joke
+i want a joke,joke
+got any jokes,joke
+cheer me up with a joke,joke
+tell me something funny,joke
+i need a laugh,joke
+joke please,joke
+do you know any good jokes,joke
+tell me another joke,joke
+can you be funny,joke
+give me a funny one,joke
+make me smile,joke
+crack a joke,joke
+hit me with a joke,joke
+let's play a game,game
+i want to play something,game
+play a quiz,game
+trivia please,game
+let's play rock paper scissors,game
+give me a riddle,game
+can we play a game,game
+game time,game
+quiz me,game
+i want a puzzle,game
+play guess the number,game
+would you rather,game
+let's have some fun with a game,game
+ask me trivia questions,game
+let's play,game
+i'd like to play a game with you,game
+how can i study better,study_help
+tips for studying,study_help
+i can't focus on my homework,study_help
+help me revise for exams,study_help
+how to memorize faster,study_help
+i keep procrastinating on assignments,study_help
+give me study tips,study_help
+how do i prepare for my exam,study_help
+i need to concentrate on studying,study_help
+best way to revise,study_help
+i'm struggling to study,study_help
+how to learn faster,study_help
+exam preparation advice,study_help
+how to stop procrastinating,study_help
+my exams are coming and i'm not ready,study_help
+how do i focus when studying,study_help
+what career should i choose,career_help
+i need career advice,career_help
+how to write a good resume,career_help
+how do i get a job,career_help
+i'm confused about my future,career_help
+tips for job interviews,career_help
+should i do a masters,career_help
+how to prepare for placements,career_help
+what should i do after college,career_help
+help me plan my career,career_help
+how do i get my first job,career_help
+which field should i pick,career_help
+advice on higher studies,career_help
+i don't know what to do with my life,career_help
+how do i crack an interview,career_help
+what skills do i need for a good job,career_help
+i can't sleep,sleep_help
+how to sleep better,sleep_help
+i have insomnia,sleep_help
+i'm awake all night,sleep_help
+tips to fall asleep,sleep_help
+help me sleep,sleep_help
+my sleep schedule is messed up,sleep_help
+i keep waking up at night,sleep_help
+how to fix my sleep,sleep_help
+i can't fall asleep at night,sleep_help
+trouble sleeping lately,sleep_help
+i sleep too late,sleep_help
+how can i get better sleep,sleep_help
+what helps with sleeping,sleep_help
+i'm up late and can't sleep,sleep_help
+advice for good sleep,sleep_help
+guide me through breathing,breathing
+breathing exercise please,breathing
+help me calm down,breathing
+i need to relax,breathing
+teach me deep breathing,breathing
+calm me down,breathing
+i need a breathing exercise,breathing
+help me breathe,breathing
+let's do some breathing,breathing
+i want to feel calm,breathing
+relaxation exercise please,breathing
+help me relax my mind,breathing
+show me a calming exercise,breathing
+i'm having a panic attack help me breathe,breathing
+how can i calm myself,breathing
+meditation exercise please,breathing

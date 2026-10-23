@@ -1,0 +1,13 @@
+# Python & Virtual Envs
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Environment / Secret Files
+.env
+
+# System Files
+.DS_Store
+Thumbs.db

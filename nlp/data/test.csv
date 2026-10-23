@@ -1,0 +1,127 @@
+text,label
+hii nova,greeting
+morning!,greeting
+heya,greeting
+well hello there,greeting
+hey buddy,greeting
+evening nova,greeting
+greetings,greeting
+thanks a ton,thanks
+you've been a big help,thanks
+i appreciate you,thanks
+thank you very much,thanks
+cheers,thanks
+that's exactly what i needed thanks,thanks
+tysm,thanks
+"gotta run, bye",goodbye
+talk later,goodbye
+goodnight,goodbye
+i'm leaving now,goodbye
+see you soon,goodbye
+cya,goodbye
+"heading to bed, bye",goodbye
+how's your day going,how_are_you
+you doing alright?,how_are_you
+how are u today,how_are_you
+what are you up to,how_are_you
+how's life treating you,how_are_you
+"hope you're well, how are you",how_are_you
+how you been,how_are_you
+i just feel so low lately,sad
+i've had a really bad day and want to cry,sad
+my heart hurts,sad
+feeling kind of hopeless,sad
+i'm not okay,sad
+i feel like crying,sad
+everything feels gloomy,sad
+i'm drowning in assignments,stressed
+there's just too much on my plate,stressed
+feeling so much pressure from everything,stressed
+i can't handle this workload,stressed
+my schedule is insane,stressed
+total stress mode,stressed
+work is overwhelming me,stressed
+i keep overthinking everything,anxious
+i'm on edge all the time,anxious
+i'm terrified of what's coming,anxious
+my mind won't stop racing with worry,anxious
+so nervous right now,anxious
+i feel panicky,anxious
+i'm afraid something will go wrong,anxious
+i'm seething,angry
+that really got on my nerves,angry
+i'm so fed up with people,angry
+i could scream i'm so irritated,angry
+my blood is boiling,angry
+i'm livid,angry
+he keeps making me furious,angry
+i've got nobody to hang out with,lonely
+i feel so left out of everything,lonely
+no one ever texts me,lonely
+i'm by myself all the time,lonely
+i wish i had someone to talk to,lonely
+i feel isolated from everyone,lonely
+nobody invites me anywhere,lonely
+i have zero things to do,bored
+life is so dull today,bored
+keep me entertained please,bored
+i'm dying of boredom,bored
+nothing exciting is happening,bored
+i've got too much free time,bored
+need something to pass the time,bored
+"guess what, i got in!",happy
+i'm on cloud nine,happy
+i couldn't be happier,happy
+something wonderful happened today,happy
+i aced my test,happy
+yay i finished my project,happy
+"i'm so pumped, things are going well",happy
+got any good tracks for me,music
+recommend some tunes,music
+i need background music while coding,music
+what songs should i put on,music
+something to listen to while i cook,music
+play hindi songs please,music
+suggest a party playlist,music
+say something hilarious,joke
+i could use a good laugh,joke
+know any funny stories,joke
+lighten the mood with a joke,joke
+tell me a pun,joke
+got a funny one for me,joke
+try to make me giggle,joke
+got any games we can play,game
+test my knowledge with questions,game
+give me a brain teaser,game
+let's do a quiz,game
+i feel like playing something,game
+challenge me with a puzzle,game
+wanna play a game,game
+what's the best way to prepare for tests,study_help
+i can't concentrate while reading my notes,study_help
+how to remember what i study,study_help
+advice for revision before finals,study_help
+help me stop wasting time and study,study_help
+"i have exams next week, what should i do",study_help
+ways to learn quicker,study_help
+guide me about my future career,career_help
+how should i prepare for an interview,career_help
+is a masters degree worth it,career_help
+i'm lost about what job to go for,career_help
+tips to improve my cv,career_help
+how do i land an internship,career_help
+what path should i take after graduation,career_help
+why am i not able to fall asleep,sleep_help
+i toss and turn all night,sleep_help
+my body clock is all off,sleep_help
+"help, still awake at 3am",sleep_help
+need tips for a good night's rest,sleep_help
+i've been sleeping badly,sleep_help
+how do i stop staying up so late,sleep_help
+i need to take some deep breaths,breathing
+walk me through a relaxing exercise,breathing
+can you help me settle my nerves,breathing
+do a calming exercise with me,breathing
+help me slow my breathing,breathing
+i want to unwind and breathe,breathing
+guide me to relax,breathing

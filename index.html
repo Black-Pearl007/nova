@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova - Your Friendly AI Companion</title>
+<style>
+:root{--bg:#0b1020;--bg2:#121a35;--panel:rgba(22,31,64,.8);--bd:#2a3768;--ink:#e8edff;--muted:#9aa7d6;--accent:#4de1ff;--accent2:#a78bfa;--user:#4de1ff;--user-t:#061226;--warn:#ffd166;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eef3ff;--bg2:#dfe8ff;--panel:rgba(255,255,255,.92);--bd:#c3d0ee;--ink:#14204a;--muted:#55639a;--accent:#0a86c9;--accent2:#6d4fe0;--user:#14204a;--user-t:#ffffff;--warn:#b86e00}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(1200px 600px at 80% -10%,var(--bg2),transparent 60%),radial-gradient(900px 500px at -10% 110%,var(--bg2),transparent 60%),var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;display:flex;justify-content:center;overflow:hidden}
+.app{width:100%;max-width:760px;height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--panel);border-bottom:1px solid var(--bd);backdrop-filter:blur(8px)}
+.orb{width:44px;height:44px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff,var(--accent) 35%,var(--accent2));box-shadow:0 0 14px var(--accent);animation:idle 4s ease-in-out infinite}
+header.listening .orb{animation:pulse .8s ease-in-out infinite;box-shadow:0 0 22px #ff6b6b;background:radial-gradient(circle at 35% 30%,#fff,#ff6b6b 40%,var(--accent2))}
+header.speaking .orb{animation:pulse .5s ease-in-out infinite;box-shadow:0 0 26px var(--accent)}
+header.thinking .orb{animation:pulse 1s ease-in-out infinite}
+@keyframes idle{50%{transform:scale(1.06)}}
+@keyframes pulse{50%{transform:scale(1.2)}}
+h1{font-size:1.1rem;margin:0;line-height:1.2}
+header small{display:block;color:var(--muted);font-size:.78rem}
+.sp{flex:1}
+button{font:inherit;cursor:pointer}
+.icon{background:none;border:1px solid var(--bd);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:.85rem}
+.icon:hover{border-color:var(--accent)}
+.icon[aria-pressed="true"]{background:var(--accent);color:var(--user-t);border-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+#log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msg{max-width:86%;padding:10px 14px;border-radius:16px;border:1px solid var(--bd);white-space:pre-line;overflow-wrap:anywhere;animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.bot{align-self:flex-start;background:var(--panel);border-bottom-left-radius:4px}
+.me{align-self:flex-end;background:var(--user);color:var(--user-t);border-color:var(--user);border-bottom-right-radius:4px}
+.dots{display:inline-flex;gap:4px;padding:4px 0}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.msg a.lnk{display:inline-block;margin:6px 6px 0 0;padding:5px 12px;border-radius:999px;background:var(--accent);color:var(--user-t);text-decoration:none;font-weight:700;font-size:.85rem}
+.msg a.lnk:hover{filter:brightness(1.1)}
+.qr{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start;max-width:92%;animation:pop .25s ease-out}
+.chip{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:5px 13px;font-weight:600;font-size:.88rem}
+.chip:hover{background:var(--accent);color:var(--user-t)}
+.chips{display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto;scrollbar-width:none}
+.chips .chip{white-space:nowrap}
+.bar{display:flex;gap:8px;padding:12px 14px;background:var(--panel);border-top:1px solid var(--bd)}
+.bar input{flex:1;min-width:0;font:inherit;padding:10px 14px;border:1px solid var(--bd);border-radius:999px;background:var(--bg);color:var(--ink)}
+.send,.mic{border:0;border-radius:999px;padding:0 18px;font-weight:700;background:var(--accent);color:var(--user-t)}
+.mic{width:44px;padding:0;background:transparent;border:1px solid var(--bd);color:var(--ink);font-size:1.1rem}
+.mic.on{background:#ff6b6b;border-color:#ff6b6b;color:#fff}
+.moodrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.mood{font-size:1.6rem;line-height:1;background:transparent;border:1px solid var(--bd);border-radius:14px;padding:8px 10px;transition:transform .15s}
+.mood:hover{transform:scale(1.18) rotate(-4deg);border-color:var(--accent)}
+.breath{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 0 8px}
+.bc{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--accent) 40%,var(--accent2));box-shadow:0 0 18px var(--accent)}
+.bl{font-weight:700;color:var(--accent)}
+.note{margin-top:6px;font-size:.74rem;color:var(--muted);font-style:italic}
+.cf{position:fixed;top:-14px;width:8px;height:12px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 1.6s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(600deg)}}
+dialog{border:1px solid var(--bd);border-radius:16px;background:var(--bg2);color:var(--ink);width:min(94vw,460px);padding:18px;max-height:90vh;overflow:auto}
+dialog::backdrop{background:rgba(3,6,20,.65)}
+dialog h2{margin:0 0 4px;font-size:1.1rem}
+dialog p{margin:0 0 8px;color:var(--muted);font-size:.88rem}
+label{display:block;font-size:.82rem;font-weight:600;margin:10px 0 3px}
+dialog input,dialog select{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
+.danger{border-color:#ff6b6b;color:#ff6b6b}
+@media (max-width:520px){.msg{max-width:94%}header small{display:none}.icon{padding:6px 8px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header id="hdr">
+    <div class="orb" aria-hidden="true"></div>
+    <div><h1 id="title">Nova</h1><small id="sub">Your friendly companion</small></div>
+    <div class="sp"></div>
+    <button class="icon" id="talkBtn" type="button" aria-pressed="false" aria-label="Toggle hands-free talk mode">Talk mode</button>
+    <button class="icon" id="voiceBtn" type="button" aria-pressed="false" aria-label="Toggle spoken replies">Voice off</button>
+    <button class="icon" id="settingsBtn" type="button" aria-label="Open settings">Settings</button>
+  </header>
+  <div id="log" role="log" aria-live="polite"></div>
+  <div class="chips" id="chips"></div>
+  <form class="bar" id="form" onsubmit="return false">
+    <button class="mic" id="mic" type="button" aria-label="Speak your message" title="Speak">&#127908;</button>
+    <input id="q" type="text" placeholder="Talk to me about anything..." autocomplete="off" aria-label="Your message">
+    <button class="send" id="go" type="button">Send</button>
+  </form>
+</div>
+
+<dialog id="dlg">
+  <h2>Settings</h2>
+  <p>Everything is saved only in this browser.</p>
+  <div id="fields"></div>
+  <div class="row">
+    <button class="icon danger" id="wipe" type="button">Erase my saved data</button>
+    <span><button class="icon" id="cancel" type="button">Cancel</button> <button class="send" id="save" type="button" style="padding:8px 18px">Save</button></span>
+  </div>
+</dialog>
+
+<script src="model.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- storage & config ---------- */
+var DEF={botName:"Nova",userName:"",voiceOn:false,talk:false,rate:1,voiceURI:"",micLang:"en-IN",debug:false};
+function store(k,v){try{if(v===undefined){var s=localStorage.getItem(k);return s?JSON.parse(s):null;}localStorage.setItem(k,JSON.stringify(v));}catch(e){}return null;}
+var cfg=(function(){var c=JSON.parse(JSON.stringify(DEF)),s=store("nova_cfg");if(s){for(var k in DEF){if(s[k]!==undefined)c[k]=s[k];}}return c;})();
+function save(){store("nova_cfg",cfg);}
+var todos=store("nova_todos")||[],journal=store("nova_journal")||[];
+var $=function(id){return document.getElementById(id);};
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var order={};function nextOf(key,arr){var i=order[key]===undefined?Math.floor(Math.random()*arr.length):(order[key]+1)%arr.length;order[key]=i;return arr[i];}
+function norm(s){return " "+s.toLowerCase().replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim()+" ";}
+function nm(){return cfg.userName?(", "+cfg.userName):"";}
+function greeting(){var h=new Date().getHours();return h<5?"Hey, night owl":h<12?"Good morning":h<17?"Good afternoon":h<21?"Good evening":"Hey, night owl";}
+
+/* ---------- content ---------- */
+var JOKES=["Why did the student eat his homework? The teacher said it was a piece of cake.","I told my laptop I needed a break. Now it won’t stop sending me Kit-Kat ads.","Why do programmers prefer dark mode? Because light attracts bugs.","I’d tell you a UDP joke, but you might not get it.","Why was the math book sad? It had too many problems.","My WiFi and I have a lot in common. We both drop out when things get stressful.","Why did the scarecrow get promoted? He was outstanding in his field.","I asked my phone for a joke. It said, ‘Your screen time.’ Ouch."];
+var QUOTES=["Small steps every day beat big plans that never start.","You don’t have to be perfect to be worth it. Just keep showing up.","Tough days are tuition for the person you’re becoming.","Progress is quiet. Keep going even when nobody is clapping.","Rest is part of the work, not a break from it.","Start where you are, use what you have, do what you can.","A slow day is still a day you didn’t quit."];
+var FACTS=["Honey never spoils. Edible honey has been found in ancient tombs.","Octopuses have three hearts and blue blood.","A day on Venus is longer than its year.","Bananas are berries, but strawberries are not.","The first computer bug was a real moth found in a relay in 1947.","Your brain uses roughly 20 percent of your body’s energy while being about 2 percent of its weight."];
+var AFFIRM=["You are doing better than you think.","You’re allowed to take up space and be proud of how far you’ve come.","Your effort matters, even when the results take time.","You can do hard things. You’ve already done many.","You are worthy of rest, kindness and good things.","Mistakes mean you’re trying. Keep going."];
+var COMPLIMENTS=["You show up and try, even on tough days. That says a lot about you.","You’re curious and you keep learning. That’s a real strength.","You’re kind enough to chat with a little bot like me. That’s lovely.","You’ve got more courage than you give yourself credit for."];
+var FOOD=["How about hot idli or dosa with chutney? Comfort food never fails.","A quick veggie sandwich and a glass of buttermilk is light and tasty.","Try a bowl of curd rice with pickle, simple and soothing.","A fruit bowl with some nuts is an easy, energising snack.","Egg or paneer wrap, quick, filling and protein-rich."];
+var QUIZ=[
+ {q:"Which planet is known as the Red Planet?",a:"Mars",w:["Venus","Jupiter","Mercury"]},
+ {q:"How many continents are there?",a:"7",w:["5","6","8"]},
+ {q:"What is the largest ocean on Earth?",a:"Pacific",w:["Atlantic","Indian","Arctic"]},
+ {q:"Who wrote India’s national anthem?",a:"Rabindranath Tagore",w:["Bankim Chandra Chatterjee","Sarojini Naidu","Mahatma Gandhi"]},
+ {q:"What is H2O commonly known as?",a:"Water",w:["Salt","Oxygen","Hydrogen"]},
+ {q:"Which is the largest mammal?",a:"Blue whale",w:["African elephant","Giraffe","Hippopotamus"]},
+ {q:"How many sides does a hexagon have?",a:"6",w:["5","7","8"]},
+ {q:"What is the capital of Japan?",a:"Tokyo",w:["Kyoto","Osaka","Seoul"]},
+ {q:"Which gas do plants absorb from the air for photosynthesis?",a:"Carbon dioxide",w:["Oxygen","Nitrogen","Helium"]},
+ {q:"What does CPU stand for?",a:"Central Processing Unit",w:["Central Program Utility","Computer Personal Unit","Core Processing Utility"]},
+ {q:"How many days are in a leap year?",a:"366",w:["365","364","367"]},
+ {q:"Which is the fastest land animal?",a:"Cheetah",w:["Lion","Horse","Leopard"]},
+ {q:"What is the smallest prime number?",a:"2",w:["0","1","3"]},
+ {q:"Which language is mainly used to style web pages?",a:"CSS",w:["HTML","Python","SQL"]},
+ {q:"Which planet is famous for its prominent rings?",a:"Saturn",w:["Mars","Mercury","Venus"]}
+];
+var RIDDLES=[
+ {q:"What has keys but can’t open locks?",re:/piano|keyboard/,a:"a piano (or a keyboard)",h:"You can play music on it."},
+ {q:"What gets wetter the more it dries?",re:/towel/,a:"a towel",h:"You use it after a bath."},
+ {q:"I speak without a mouth and hear without ears. What am I?",re:/echo/,a:"an echo",h:"Shout in a valley and I answer."},
+ {q:"What has hands but can’t clap?",re:/clock|watch/,a:"a clock",h:"It tells you something all day."},
+ {q:"The more you take, the more you leave behind. What am I?",re:/footstep|steps?\b|foot/,a:"footsteps",h:"Think about walking."},
+ {q:"What can travel around the world while staying in a corner?",re:/stamp/,a:"a stamp",h:"It goes on letters."}
+];
+var WYR=[["Be able to fly","Be able to read minds"],["Have unlimited free food","Have unlimited free travel"],["Always be 10 minutes early","Always be 10 minutes late"],["Live in a treehouse","Live in a houseboat"],["Learn any language instantly","Learn any instrument instantly"],["Never use social media again","Never watch videos again"],["Have a pet dragon","Have a pet robot"],["Time travel to the past","Time travel to the future"]];
+var MOODS=[
+ {id:"sad",re:/\b(sad|unhappy|depressed|crying|heartbroken|miserable|feeling low|feel low|upset|down today)\b/,lines:["I’m really sorry you’re feeling this way. It’s okay to feel sad, you don’t have to hide it from me. 💙","That sounds heavy. I’m here and I’m listening. Take your time. 💙"],chips:["Let me vent","Play something soothing","Cheer me up","Breathing exercise"],neg:1},
+ {id:"stressed",re:/\b(stress|stressed|overwhelm|overwhelmed|pressure|burnt out|burnout|tension)\b/,lines:["That’s a lot to carry. Let’s make it smaller together.","Stress is a signal, not a verdict on you. Let’s slow things down a bit."],chips:["Let me vent","Breathing exercise","Make a to-do list","Play something relaxing"],neg:1},
+ {id:"anxious",re:/\b(anxious|anxiety|worried|worry|scared|afraid|nervous|panic)\b/,lines:["I hear you. Feeling anxious is uncomfortable, but it passes. You’re not alone right now.","Thank you for telling me. Let’s ground ourselves for a moment."],chips:["Breathing exercise","Let me vent","Play something calm"],neg:1},
+ {id:"angry",re:/\b(angry|furious|mad at|irritated|annoyed|frustrated|rage)\b/,lines:["That sounds really frustrating. Your feelings make sense.","Anger often means something mattered to you. Let it out here if you want, I won’t judge."],chips:["Let me vent","Breathing exercise","Play something to cool down","Tell me a joke"],neg:1},
+ {id:"tired",re:/\b(tired|exhausted|sleepy|drained|fatigue)\b/,lines:["You sound worn out. Be kind to yourself today. 😴","Rest counts as progress too."],chips:["Sleep tips","Play something relaxing","Tell me a joke"],neg:0},
+ {id:"lonely",re:/\b(lonely|feel alone|all alone|nobody cares|no friends)\b/,lines:["Thanks for trusting me with that. Feeling lonely hurts, and it doesn’t mean something is wrong with you. 💙","I’m here with you right now. Let’s talk."],chips:["Let me vent","Friendship advice","Play something comforting","Play a game"],neg:1},
+ {id:"bored",re:/\b(bored|boring|nothing to do)\b/,lines:["Boredom, the perfect excuse to try something fun! 😄"],chips:["Play a game","Tell me a joke","Fun fact","Play something fun"],neg:0},
+ {id:"happy",re:/\b(happy|excited|great day|awesome|amazing|good news|celebrat\w*|i passed|got the job|got selected)\b/,lines:["That’s wonderful! I’m genuinely happy for you. Tell me more! 🎉","Yesss, love to hear it! You deserve this. 🎉"],chips:["Play something upbeat","Play a game","Tell me a joke"],neg:0,fx:1}
+];
+var TOPICS=[
+ {id:"study",re:/\b(study|studying|revise|revision|homework|assignment|learn faster|memori[sz]e)\b/,tips:["Try the 25/5 method: 25 minutes of focused study, then a 5 minute break. Do four rounds, then take a longer rest.","Test yourself instead of rereading. Close the book and write down what you remember, it sticks far better.","Teach the topic to an imaginary friend in simple words. Wherever you get stuck is what to revise.","Study the hardest subject first, when your energy is highest."]},
+ {id:"exam",re:/\b(exam|exams|viva|interview|test tomorrow|presentation)\b/,tips:["Sleep well the night before. A rested brain beats a last-minute all-nighter.","Practice with past papers under timed conditions, it reduces surprises on the day.","Before the exam, take three slow breaths and read the whole paper first. Start with questions you know to build momentum.","For interviews, prepare three stories about things you built or solved, and practice saying them out loud."]},
+ {id:"focus",re:/\b(procrastinat\w*|can'?t focus|distract\w*|lazy|no motivation|unmotivated|phone addiction)\b/,tips:["Use the 2 minute rule: just start for two minutes. Starting is the hardest part, momentum does the rest.","Put your phone in another room for one focus session. Out of sight really is out of mind.","Break the task into the smallest next step you can finish in 10 minutes, and do only that.","Pick one task for today and say it out loud. One finished thing beats five half-started ones."]},
+ {id:"sleep",re:/\b(sleep|insomnia|can'?t sleep|awake all night)\b/,tips:["Keep a fixed sleep and wake time, even on weekends. Your body loves rhythm.","Stop screens 30 to 60 minutes before bed and keep the room cool and dark.","If your mind is racing, write down everything on your mind for 5 minutes, it helps your brain let go.","Avoid caffeine in the afternoon. Try the breathing exercise at bedtime."]},
+ {id:"career",re:/\b(career|job|resume|placement|college|masters|future|higher studies)\b/,tips:["Build a small project that solves a real problem and show it publicly. Proof of work speaks louder than a long resume.","Talk to three people who are 5 years ahead of you and ask what they wish they knew. Their answers are gold.","You don’t need the whole plan. Choose the next experiment, learn from it, then adjust.","Keep a short list of what you enjoy doing and what you’re good at. Careers grow where the two overlap."]},
+ {id:"friends",re:/\b(friend\w*|breakup|relationship|crush|argument|fight with)\b/,tips:["Real friendship is mostly small things: a message, a check-in, remembering something they said.","In a disagreement, try ‘I felt…’ instead of ‘You always…’. It keeps the conversation open.","To make friends, join something around a shared interest, a club, a sport, a project. Connection grows beside activity.","Give people space to cool off, then reach out first. Being the one who reconnects is a strength."]},
+ {id:"confidence",re:/\b(confidence|shy|public speaking|stage fear|self.?esteem|insecure)\b/,tips:["Confidence is built by doing, not waiting to feel ready. Do the scary thing in a small way first.","Prepare your first 30 seconds of a talk word for word. After that, nerves usually settle.","Talk to yourself like you would to a good friend. Kind self-talk is a skill you can practice.","Keep a ‘wins’ note on your phone. Read it before big moments."]},
+ {id:"money",re:/\b(money|saving|savings|budget|salary|pocket money)\b/,tips:["Pay yourself first: move a fixed part of income to savings on day one, before spending.","Track your spending for one month. Just seeing it usually changes habits.","Build a small emergency fund before anything else. Even a small cushion makes life calmer. (General guidance, not financial advice.)"]},
+ {id:"health",re:/\b(health|healthy|diet|exercise tips|fitness|workout tips|drink water)\b/,tips:["A 20 minute walk daily does wonders for mood, energy and focus.","Drink water through the day and keep a bottle on your desk.","Stand up and stretch every hour if you sit a lot. Your back will thank you.","Small consistent habits beat intense short bursts. (General wellness tips, not medical advice.)"]},
+ {id:"family",re:/\b(parents|family|mom|dad|mother|father|brother|sister)\b/,tips:["Pick a calm moment to talk, not during an argument. Start with what you appreciate, then share what you need.","Parents often show care through worry. Telling them your plan calmly helps them trust you.","Small gestures, a call, a shared meal, help more than big speeches."]}
+];
+var REFLECT=["That sounds really tough. I’m glad you told me.","I hear you. Anyone in your place would feel that way.","Thank you for sharing that. It makes sense that it’s weighing on you.","That’s a lot to deal with. You’re handling more than you give yourself credit for."];
+var VENTQ=["What part is weighing on you most?","How long has this been on your mind?","What would make today even a little bit easier?","Is there someone you trust you could also share this with?"];
+var MUSIC_MOOD=[[/\b(feel good|happy|upbeat|cheerful|fun)\b/,"feel good"],[/\b(sad|soothing|heartbreak|melancholy|comforting|comfort|cry)\b/,"soothing melodies"],[/\b(focus|study|work|concentrat\w*|coding)\b/,"focus lofi"],[/\b(workout|gym|running|run|energy|pump|energetic)\b/,"workout energy"],[/\b(relax|relaxing|chill|calm|unwind|cool down|peace)\b/,"chill relaxing"],[/\b(sleep|bedtime|night)\b/,"sleep calm"],[/\b(romantic|love)\b/,"romantic"],[/\b(party|dance|dancing)\b/,"party dance"],[/\b(motivat\w*|inspire|inspiring)\b/,"motivational"],[/\b(travel|drive|driving|road trip)\b/,"road trip"]];
+var LANGS=[[/\btamil\b/,"Tamil"],[/\bhindi\b/,"Hindi"],[/\benglish\b/,"English"],[/\btelugu\b/,"Telugu"],[/\bmalayalam\b/,"Malayalam"],[/\bkannada\b/,"Kannada"],[/\binstrumental|no lyrics\b/,"Instrumental"]];
+var CRISIS=/(kill myself|end my life|suicid|want to die|self.?harm|hurt myself|don'?t want to live|no reason to live)/i;
+var ctx={mood:null};
+
+/* ---------- UI ---------- */
+var log=$("log"),hdr=$("hdr"),lastChips=null;
+function clearChips(){if(lastChips){lastChips.remove();lastChips=null;}}
+function add(text,who,opts){
+  opts=opts||{};clearChips();
+  var d=document.createElement("div");d.className="msg "+who;
+  if(text){var s=document.createElement("span");s.textContent=text;d.appendChild(s);}
+  if(opts.links){var w=document.createElement("div");opts.links.forEach(function(l){var a=document.createElement("a");a.className="lnk";a.href=l.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=l.label;w.appendChild(a);});d.appendChild(w);}
+  if(opts.node)d.appendChild(opts.node);
+  if(opts.note&&cfg.debug){var nt=document.createElement("div");nt.className="note";nt.textContent=opts.note;d.appendChild(nt);}
+  log.appendChild(d);
+  if(opts.chips&&opts.chips.length){var q=document.createElement("div");q.className="qr";opts.chips.forEach(function(c){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=c;b.addEventListener("click",function(){ask(c);});q.appendChild(b);});log.appendChild(q);lastChips=q;}
+  log.scrollTop=log.scrollHeight;return d;
+}
+function typingBubble(){clearChips();var d=document.createElement("div");d.className="msg bot";var s=document.createElement("span");s.className="dots";s.setAttribute("aria-label","Nova is typing");for(var i=0;i<3;i++)s.appendChild(document.createElement("i"));d.appendChild(s);log.appendChild(d);log.scrollTop=log.scrollHeight;hdr.classList.add("thinking");return d;}
+function confetti(){var cols=["#4de1ff","#a78bfa","#ffd166","#ff6b9d","#7cffb2"];for(var i=0;i<30;i++){var p=document.createElement("i");p.className="cf";p.style.left=Math.random()*100+"vw";p.style.background=cols[i%cols.length];p.style.animationDelay=(Math.random()*.4)+"s";p.style.animationDuration=(1.2+Math.random()*.8)+"s";document.body.appendChild(p);(function(n){setTimeout(function(){n.remove();},2600);})(p);}}
+function moodRow(){
+  var w=document.createElement("div");w.className="moodrow";
+  [["😄","I’m feeling happy"],["🙂","I’m feeling okay"],["😐","I’m feeling meh"],["😔","I’m feeling sad"],["😤","I’m feeling angry"],["😰","I’m feeling anxious"],["😴","I’m feeling tired"]].forEach(function(p){var b=document.createElement("button");b.type="button";b.className="mood";b.textContent=p[0];b.setAttribute("aria-label",p[1]);b.title=p[1];b.addEventListener("click",function(){ask(p[1]);});w.appendChild(b);});
+  return w;
+}
+
+/* ---------- voice ---------- */
+var synth=window.speechSynthesis||null,voices=[];
+function loadVoices(){if(synth)voices=synth.getVoices()||[];}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+function clean(t){return t.replace(/https?:\/\/\S+/g,"").replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"").replace(/\s+/g," ").trim();}
+function speak(text){
+  if(!cfg.voiceOn||!synth)return;
+  synth.cancel();
+  var u=new SpeechSynthesisUtterance(clean(text));u.rate=cfg.rate;
+  var v=voices.filter(function(x){return x.voiceURI===cfg.voiceURI;})[0];if(v){u.voice=v;u.lang=v.lang;}
+  u.onstart=function(){hdr.classList.add("speaking");};
+  u.onend=u.onerror=function(){hdr.classList.remove("speaking");if(cfg.talk&&!listening)setTimeout(startMic,400);};
+  synth.speak(u);
+}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,listening=false;
+if(!SR)$("mic").style.display="none";
+function startMic(){
+  if(!SR||listening)return;
+  if(synth)synth.cancel();
+  rec=new SR();rec.lang=cfg.micLang;rec.interimResults=false;rec.maxAlternatives=1;
+  rec.onstart=function(){listening=true;$("mic").classList.add("on");hdr.classList.add("listening");$("q").placeholder="Listening...";};
+  rec.onend=function(){listening=false;$("mic").classList.remove("on");hdr.classList.remove("listening");$("q").placeholder="Talk to me about anything...";};
+  rec.onerror=function(e){if(e.error==="not-allowed"||e.error==="service-not-allowed"){cfg.talk=false;save();renderVoiceBtn();add("I can’t use the microphone. Please allow mic access in your browser, or just type to me.","bot");}};
+  rec.onresult=function(e){var t=e.results[0][0].transcript;if(t)ask(t);};
+  try{rec.start();}catch(e){}
+}
+$("mic").addEventListener("click",function(){if(listening&&rec){rec.stop();}else startMic();});
+function renderVoiceBtn(){
+  var b=$("voiceBtn"),t=$("talkBtn");
+  b.textContent=cfg.voiceOn?"Voice on":"Voice off";b.setAttribute("aria-pressed",cfg.voiceOn?"true":"false");
+  t.textContent=cfg.talk?"Talking...":"Talk mode";t.setAttribute("aria-pressed",cfg.talk?"true":"false");
+  if(!synth)b.style.display="none";
+  if(!synth||!SR)t.style.display="none";
+}
+$("voiceBtn").addEventListener("click",function(){cfg.voiceOn=!cfg.voiceOn;if(!cfg.voiceOn)cfg.talk=false;save();renderVoiceBtn();if(cfg.voiceOn)speak("Voice is on. I’ll read my replies out loud.");else if(synth)synth.cancel();});
+$("talkBtn").addEventListener("click",function(){
+  cfg.talk=!cfg.talk;if(cfg.talk)cfg.voiceOn=true;save();renderVoiceBtn();
+  if(cfg.talk){var m="Talk mode is on. I’ll speak, then listen to you. Just talk to me naturally!";add(m,"bot");speak(m);}
+  else{if(rec&&listening)rec.stop();if(synth)synth.cancel();add("Talk mode off. You can still type or tap the mic.","bot");}
+});
+
+/* ---------- small helpers / tools ---------- */
+function ytLinks(q){return [{label:"Open on YouTube",url:"https://www.youtube.com/results?search_query="+encodeURIComponent(q)},{label:"Open on Spotify",url:"https://open.spotify.com/search/"+encodeURIComponent(q)}];}
+function breathing(){
+  var w=document.createElement("div");w.className="breath";
+  var c=document.createElement("div");c.className="bc";var l=document.createElement("div");l.className="bl";l.setAttribute("aria-live","polite");
+  w.appendChild(c);w.appendChild(l);
+  var ph=[["Breathe in...",4,1.5],["Hold...",4,1.5],["Breathe out...",6,1]],round=0,i=0;
+  function step(){
+    if(!w.isConnected)return;
+    if(round>=4){l.textContent="Nicely done. How do you feel now?";c.style.transform="scale(1)";return;}
+    var p=ph[i];l.textContent=p[0];c.style.transition="transform "+p[1]+"s ease-in-out";c.style.transform="scale("+p[2]+")";
+    setTimeout(function(){i++;if(i>=ph.length){i=0;round++;}step();},p[1]*1000);
+  }
+  setTimeout(step,60);return w;
+}
+function beep(){try{var A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.15;o.start();setTimeout(function(){o.stop();a.close();},600);}catch(e){}}
+function setTimer(sec,label){setTimeout(function(){beep();var m="Time’s up! "+label+" is done. 🔔";add(m,"bot",{chips:["Timer 5 minutes","Play something relaxing"]});speak(m);},sec*1000);}
+function fmtDur(s){if(s>=3600)return (s/3600)+" hour"+(s>=7200?"s":"");if(s>=60)return (s/60)+" minute"+(s>=120?"s":"");return s+" seconds";}
+function calc(raw){
+  var e=raw.toLowerCase().replace(/what('?s| is)|calculate|calc|equals|=|\?/g,"").replace(/x|×/g,"*").replace(/÷/g,"/").replace(/\^/g,"**").replace(/\s+/g,"");
+  if(!/^[\d+\-*/().%]+$/.test(e)||!/\d/.test(e)||!/[+\-*/%]/.test(e))return null;
+  try{var r=Function('"use strict";return ('+e+')')();if(typeof r==="number"&&isFinite(r))return String(Math.round(r*1e8)/1e8);}catch(x){}return null;
+}
+function renderTodos(){if(!todos.length)return "Your to-do list is empty. Say ‘add todo finish report’ to add one.";return "Your to-do list:\n"+todos.map(function(t,i){return (i+1)+". "+t;}).join("\n")+"\n\nSay ‘done 1’ to tick one off.";}
+function today(){return new Date().toLocaleDateString([],{day:"numeric",month:"short"});}
+function addJournal(e){e.date=today();journal.push(e);if(journal.length>60)journal.shift();store("nova_journal",journal);}
+
+/* ---------- music ---------- */
+var pending=null,last=null,lastLang=store("nova_lang")||"";
+function findMood(t){for(var i=0;i<MUSIC_MOOD.length;i++)if(MUSIC_MOOD[i][0].test(t))return MUSIC_MOOD[i][1];return null;}
+function findLang(t){for(var i=0;i<LANGS.length;i++)if(LANGS[i][0].test(t))return LANGS[i][1];return null;}
+function musicReply(moodQ,lang){
+  var q=lang==="Instrumental"?moodQ+" instrumental":(lang?lang+" "+moodQ+" songs":moodQ+" songs");
+  last={run:function(){return musicReply(moodQ,lang);}};
+  return {t:"Here’s a ‘"+moodQ+"’ vibe"+(lang?" in "+lang:"")+" for you. 🎧 Tap to listen, and I’ll keep you company.",links:ytLinks(q),chips:["Different language","Another mood","Tell me a joke"]};
+}
+function musicFlow(text){
+  var m=findMood(text),lang=findLang(text);
+  if(/(any language|surprise me|whatever)/.test(text))lang="";
+  if(lang)lastLang=lang,store("nova_lang",lang);
+  if(!m){pending=function(t){return findMood(t)?musicFlow(t):null;};return {t:"Happy to! What’s the mood? 🎶",chips:["Feel good","Relaxing","Focus","Workout","Soothing","Sleep"]};}
+  if(!lang&&lang!==""&&!lastLang){pending=function(t){var l=findLang(t);if(l===null&&/any|surprise|whatever|no preference/.test(t))l="";if(l===null)return null;if(l){lastLang=l;store("nova_lang",l);}return musicReply(m,l);};return {t:"Nice pick. Which language do you want?",chips:["Tamil","Hindi","English","Telugu","Instrumental","Any language"]};}
+  return musicReply(m,lang!==null?lang:lastLang);
+}
+
+/* ---------- conversation flows ---------- */
+function vent(n,prev){
+  return function(t){
+    if(/^\s*(no|nope|not now|nothing)\s*$/.test(t))return {t:"That’s okay. No pressure at all. I’m right here if you want to talk later. 💙",chips:["Cheer me up","Play something calming","Play a game"]};
+    var topic=prev||null;for(var i=0;i<TOPICS.length;i++)if(TOPICS[i].re.test(t)){topic=TOPICS[i];break;}
+    if(n<2){pending=vent(n+1,topic);return {t:nextOf("refl",REFLECT)+"\n\n"+nextOf("vq",VENTQ)};}
+    return {t:"Thank you for trusting me with all of that"+nm()+". "+(topic?"Here’s something that might help: "+nextOf("tip_"+topic.id,topic.tips):"Whatever happens, you don’t have to carry it alone."),chips:["Give me advice","Play something calming","Breathing exercise","Cheer me up"]};
+  };
+}
+function checkinFlow(){
+  var e={type:"checkin"};
+  pending=function(t,raw){
+    e.best=raw.slice(0,160);
+    pending=function(t2,raw2){
+      var none=/^\s*(no|nope|nothing|none|not really|nah)\b/.test(t2);
+      e.tough=none?"":raw2.slice(0,160);
+      pending=function(t3,raw3){
+        e.next=raw3.slice(0,160);addJournal(e);confetti();
+        return {t:"Love that"+nm()+". 🌟 Thanks for sharing your day with me. I saved this in your journal. Go rest well, you did good today.",chips:["Show my journal","Play something relaxing","Tell me a joke"]};
+      };
+      return {t:(none?"Smooth day, that’s great! 😊":nextOf("refl",REFLECT))+"\n\nLast one: what’s one thing you’re looking forward to?"};
+    };
+    return {t:"That sounds lovely. Hold on to that one. ✨\n\nWas anything tough or annoying today? (Say ‘nothing’ if not.)"};
+  };
+  return {t:"Let’s do a quick check-in. 🌙 What was the best part of your day?"};
+}
+function gratitudeFlow(){
+  var items=[];
+  function step(t,raw){
+    items.push(raw.slice(0,120));
+    if(items.length>=3){addJournal({type:"gratitude",items:items});confetti();return {t:"Beautiful. 💛 Three good things:\n- "+items.join("\n- ")+"\n\nSaved to your journal. Gratitude trains your brain to notice the good.",chips:["Show my journal","Pep talk","Tell me a joke"]};}
+    pending=step;return {t:["Lovely! One more.","Nice. Another one?","Beautiful."][items.length-1]||"Another one?"};
+  }
+  pending=step;return {t:"Let’s do a gratitude moment. 💛 Tell me 3 things you’re grateful for today, one at a time. What’s the first?"};
+}
+function journalView(){
+  if(!journal.length)return {t:"Your journal is empty. Try a daily check-in or a gratitude moment and I’ll save it here.",chips:["Daily check-in","Gratitude moment"]};
+  var lines=journal.slice(-5).reverse().map(function(e){return e.type==="gratitude"?e.date+" · Grateful for: "+e.items.join("; "):e.date+" · Best: "+e.best+(e.tough?" | Tough: "+e.tough:"")+(e.next?" | Looking forward to: "+e.next:"");});
+  return {t:"Your latest journal entries (saved only on this device):\n\n"+lines.join("\n\n"),chips:["Daily check-in","Gratitude moment","Clear journal"]};
+}
+
+/* ---------- games ---------- */
+var GAMES=["Trivia quiz","Guess the number","Riddle me this","Would you rather","Rock paper scissors"];
+function startQuiz(){
+  var st={i:0,score:0,qs:shuffle(QUIZ).slice(0,5)};
+  function ask1(){
+    var q=st.qs[st.i],opts=shuffle([q.a].concat(q.w));
+    var onAnswer=function(t,raw){
+      if(/^\s*(stop quiz|stop|quit)\s*$/.test(t))return {t:"Quiz stopped. You got "+st.score+" so far. Good effort! 🙌",chips:GAMES};
+      var pick1=null;opts.forEach(function(o){if(norm(o)===norm(raw))pick1=o;});
+      if(!pick1){pending=onAnswer;return {t:"Tap one of the options, or say ‘stop quiz’. 🙂",chips:opts.concat(["Stop quiz"])};}
+      var ok=pick1===q.a,msg;if(ok){st.score++;confetti();msg=pick(["Correct! 🎉","Yes! Nailed it! 🎯","Right answer! 🌟"]);}else msg="Not quite. The answer is "+q.a+". 💪";
+      st.i++;
+      if(st.i>=5){var s=st.score;return {t:msg+"\n\nQuiz done"+nm()+"! You scored "+s+"/5. "+(s>=4?"Brilliant! 🏆":s>=2?"Nice work! 👏":"Good try, want another round?"),chips:["Trivia quiz","Play a game"]};}
+      var nx=ask1();nx.t=msg+"\n\n"+nx.t;return nx;
+    };
+    pending=onAnswer;
+    return {t:"Question "+(st.i+1)+" of 5:\n"+q.q,chips:opts.concat(["Stop quiz"])};
+  }
+  var f=ask1();f.t="Trivia time! 🧠 Five questions.\n\n"+f.t;return f;
+}
+function guessGame(){
+  var secret=1+Math.floor(Math.random()*20),tries=0;
+  function step(t){
+    if(/give up|reveal|quit/.test(t))return {t:"It was "+secret+"! Want to try again?",chips:["Guess the number","Play a game"]};
+    var m=/\d+/.exec(t);
+    if(!m){pending=step;return {t:"Send me a number from 1 to 20, or say ‘give up’."};}
+    var g=parseInt(m[0],10);tries++;
+    if(g===secret){confetti();return {t:"🎉 Yes! It was "+secret+", and you got it in "+tries+" "+(tries===1?"try":"tries")+"!",chips:["Guess the number","Play a game"]};}
+    pending=step;return {t:(g<secret?"Higher ⬆️":"Lower ⬇️")+" Try again! ("+tries+" so far)"};
+  }
+  pending=step;return {t:"I’m thinking of a number between 1 and 20. 🤔 Can you guess it?"};
+}
+var riddleIdx=-1;
+function riddle(){
+  riddleIdx=(riddleIdx+1+Math.floor(Math.random()*2))%RIDDLES.length;var r=RIDDLES[riddleIdx],hinted=false;
+  function step(t){
+    if(/give up|reveal|answer/.test(t))return {t:"It’s "+r.a+"! Want another riddle?",chips:["Riddle me this","Play a game"]};
+    if(/\bhint\b/.test(t)){hinted=true;pending=step;return {t:"Hint: "+r.h};}
+    if(r.re.test(t)){confetti();return {t:"🎉 Correct! It’s "+r.a+"."+(hinted?"":" No hint needed, impressive!"),chips:["Riddle me this","Play a game"]};}
+    pending=step;return {t:"Not quite. Try again, or say ‘hint’ or ‘give up’.",chips:["Hint","Give up"]};
+  }
+  pending=step;return {t:"Riddle time! 🧩\n\n"+r.q,chips:["Hint","Give up"]};
+}
+function wyr(){
+  var p=pick(WYR);
+  pending=function(t,raw){
+    var a=norm(raw)===norm(p[0]),b=norm(raw)===norm(p[1]);
+    if(!a&&!b)return null;
+    return {t:pick(["Great pick! 😄 I’d be curious why you chose that.","Ooh, bold choice! 😎","Interesting! That says something fun about you. 🤔"]),chips:["Would you rather","Play a game"]};
+  };
+  return {t:"Would you rather…\n\n🅰️ "+p[0]+"\n🅱️ "+p[1],chips:[p[0],p[1]]};
+}
+var rps={w:0,l:0,d:0};
+function playRps(c){
+  var o=["rock","paper","scissors"],me=c.toLowerCase(),bot=pick(o),res;
+  if(me===bot){rps.d++;res="It’s a draw!";}
+  else if((me==="rock"&&bot==="scissors")||(me==="paper"&&bot==="rock")||(me==="scissors"&&bot==="paper")){rps.w++;res="You win! 🎉";confetti();}
+  else{rps.l++;res="I win this round! 😄";}
+  return {t:"You: "+me+"  |  Me: "+bot+"\n"+res+"\nScore: you "+rps.w+", me "+rps.l+", draws "+rps.d,chips:["Rock","Paper","Scissors","Play a game"]};
+}
+
+/* ---------- learned intent classifier (trained offline by nlp/train.py) ---------- */
+var NLP=(function(){
+  var M=window.NOVA_MODEL;
+  if(!M)return {ready:false,classify:function(){return null;}};
+  var maps=M.blocks.map(function(b){var m={};for(var i=0;i<b.terms.length;i++)m[b.terms[i]]=i;return m;});
+  var offsets=[],tot=0;M.blocks.forEach(function(b){offsets.push(tot);tot+=b.terms.length;});
+  function prep(s){return s.toLowerCase().replace(/’/g,"'").replace(/'/g,"");}
+  function grams(b,text){
+    var out=[],i,n;
+    if(b.analyzer==="char_wb"){
+      var words=text.replace(/\s+/g," ").trim().split(" ");
+      words.forEach(function(w){
+        if(!w)return;w=" "+w+" ";var L=w.length;
+        for(n=b.ngram[0];n<=b.ngram[1];n++){
+          var off=0;out.push(w.substr(off,n));
+          while(off+n<L){off++;out.push(w.substr(off,n));}
+          if(off===0)break;
+        }
+      });
+    }else{
+      var tk=text.match(/\b\w\w+\b/g)||[];
+      for(n=b.ngram[0];n<=b.ngram[1];n++)for(i=0;i+n<=tk.length;i++)out.push(tk.slice(i,i+n).join(" "));
+    }
+    return out;
+  }
+  function classify(raw){
+    var text=prep(raw),feats=[];
+    M.blocks.forEach(function(b,bi){
+      var cnt={};grams(b,text).forEach(function(g){var ix=maps[bi][g];if(ix!==undefined)cnt[ix]=(cnt[ix]||0)+1;});
+      var norm=0,vals=[];
+      for(var k in cnt){var v=cnt[k]*b.idf[k];vals.push([+k,v]);norm+=v*v;}
+      norm=Math.sqrt(norm)||1;
+      vals.forEach(function(p){feats.push([offsets[bi]+p[0],p[1]/norm]);});
+    });
+    if(!feats.length)return null;
+    var logits=M.coef.map(function(row,c){var s=M.intercept[c];for(var i=0;i<feats.length;i++)s+=row[feats[i][0]]*feats[i][1];return s;});
+    var mx=Math.max.apply(null,logits),ex=logits.map(function(z){return Math.exp(z-mx);}),sum=ex.reduce(function(a,b){return a+b;},0);
+    var p=ex.map(function(e){return e/sum;}),best=0;
+    for(var j=1;j<p.length;j++)if(p[j]>p[best])best=j;
+    return {label:M.labels[best],p:p[best],all:p};
+  }
+  return {ready:true,classify:classify,threshold:M.threshold};
+})();
+var NLP_MAP={greeting:"hello",thanks:"thanks",goodbye:"bye",how_are_you:"how are you",sad:"i feel sad",stressed:"i feel stressed",anxious:"i feel anxious",angry:"i feel angry",lonely:"i feel lonely",bored:"i feel bored",happy:"i feel happy",music:"play music",joke:"tell me a joke",game:"play a game",study_help:"study tips",career_help:"career advice",sleep_help:"sleep tips",breathing:"breathing exercise"};
+
+var FRIENDLY={greeting:"you were saying hello",thanks:"you were saying thanks",goodbye:"you were saying goodbye",how_are_you:"you were asking how I am",sad:"you\u2019re feeling sad",stressed:"you\u2019re feeling stressed",anxious:"you\u2019re feeling anxious",angry:"you\u2019re feeling angry",lonely:"you\u2019re feeling lonely",bored:"you\u2019re bored",happy:"you\u2019re feeling happy",music:"you want some music",joke:"you want a joke",game:"you want to play a game",study_help:"you want study help",career_help:"you want career advice",sleep_help:"you want sleep help",breathing:"you want a calming exercise"};
+
+/* ---------- intents ---------- */
+function crisisReply(){return {t:"I’m really glad you told me, and I’m sorry you’re in so much pain. You matter, and you don’t have to go through this alone.\n\nPlease reach out to someone right now: a parent, a friend, a teacher, or a counsellor you trust. In India you can call Tele-MANAS at 14416 (free, 24x7), and if you’re in immediate danger call 112. If you’re elsewhere, please contact your local emergency number or crisis line.\n\nI’m just a simple chatbot, so I can’t replace a real person, but I’m here to keep talking with you. What’s going on?"};}
+function adviceReply(topic){last={run:function(){return adviceReply(topic);}};return {t:nextOf("tip_"+topic.id,topic.tips),chips:["Another tip","Play some music","Tell me a joke"]};}
+function setName(raw,m){var n=m[1].trim().split(/\s+/)[0];n=n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();cfg.userName=n;save();return {t:"Nice to meet you, "+n+"! 🎉 I’ll remember that. How are you feeling right now?",node:moodRow()};}
+function listReply(key,arr,chips,prefix){last={run:function(){return listReply(key,arr,chips,prefix);}};return {t:(prefix||"")+nextOf(key,arr),chips:chips};}
+
+var INTENTS=[
+ {re:/\b(what can you do|features|menu|commands|what do you do)\b|^\s*help\s*$/i,cmd:1,run:function(){return {t:"I’m "+cfg.botName+", your friendly companion. 💙 Here’s what we can do together:\n• Chat when you’re happy, low or just bored\n• Daily check-in, gratitude moments and a private journal\n• Advice on study, exams, career, friends, sleep and more\n• Music for any mood and language\n• Games: trivia, riddles, guess the number, would-you-rather, rock paper scissors\n• Breathing exercise, timers, focus sessions, to-do list, quick maths\n• Jokes, fun facts, pep talks and compliments\nTurn on Voice or Talk mode and just speak to me!",chips:["Daily check-in","Play a game","Play music","Pep talk"]};}},
+ {re:/^\s*(?:let me vent|i want to vent|i want to talk|yes,? let me vent)\s*$/i,cmd:1,run:function(){pending=vent(0);return {t:"I’m all ears"+nm()+". 💙 Go ahead and type it all out, there’s no rush and no judgment."};}},
+ {re:/\b(daily check.?in|check.?in|talk about my day|how was my day)\b/i,cmd:1,run:function(){return checkinFlow();}},
+ {re:/\b(gratitude|grateful|thankful)\b.*\b(moment|journal|exercise|list)\b|^\s*gratitude( moment)?\s*$/i,cmd:1,run:function(){return gratitudeFlow();}},
+ {re:/\b(show|see|open|read)\b.*\bjournal\b|^\s*(my )?journal\s*$/i,cmd:1,run:function(){return journalView();}},
+ {re:/\b(clear|delete|erase)\b.*\bjournal\b/i,cmd:1,run:function(){journal=[];store("nova_journal",journal);return {t:"Journal cleared. A fresh page! ✨"};}},
+ {re:/\b(breath|breathing|calm me|calm down|grounding)\b/i,cmd:1,run:function(){return {t:"Let’s breathe together. 🌬️ Follow the circle: in for 4, hold for 4, out for 6.",node:breathing(),chips:["I feel better","Play something calm"]};}},
+ {re:/\b(timer|countdown|remind me in|pomodoro|focus session|focus timer)\b/i,cmd:1,run:function(m,raw){
+   if(/pomodoro|focus session|focus timer/i.test(raw)){setTimer(1500,"your 25 minute focus session");return {t:"Focus session started for 25 minutes. 🎯 Phone away, one task only. I’ll ping you when time’s up. Keep this tab open!"};}
+   var x=/(\d+(?:\.\d+)?)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h)\b/i.exec(raw);
+   if(!x)return {t:"For how long? Try ‘timer 10 minutes’.",chips:["Timer 5 minutes","Timer 10 minutes","Pomodoro"]};
+   var n=parseFloat(x[1]),u=x[2].toLowerCase()[0],sec=u==="h"?n*3600:u==="m"?n*60:n;
+   if(sec<1||sec>86400)return {t:"Pick a time between 1 second and 24 hours."};
+   setTimer(sec,"your "+fmtDur(sec)+" timer");return {t:"Timer set for "+fmtDur(sec)+". ⏱️ Keep this tab open and I’ll alert you."};}},
+ {re:/\b(todos?|to-dos?|to do list|task list)\b|^\s*(done|finished|remove)\s+\d+/i,cmd:1,run:function(m,raw){
+   var a=/\b(?:add|new|create)\b.*?\b(?:todo|to-do|to do|task|list)\b\s*(?:to|:)?\s*(.+)$/i.exec(raw)||/\b(?:todo|to-do)\b\s*(?:add)?\s*:?\s*(.+)$/i.exec(raw);
+   var d=/\b(?:done|finished|remove|delete)\s+(\d+)/i.exec(raw);
+   if(/\b(clear|empty)\b/i.test(raw)){todos=[];store("nova_todos",todos);return {t:"List cleared. Fresh start!"};}
+   if(d){var i=parseInt(d[1],10)-1;if(todos[i]===undefined)return {t:"I couldn’t find that number. "+renderTodos()};var r=todos.splice(i,1)[0];store("nova_todos",todos);confetti();return {t:"Ticked off: "+r+". Great job! ✅\n\n"+renderTodos()};}
+   if(a&&a[1]&&!/^(list|my list|tasks?)$/i.test(a[1].trim())&&!/\b(show|what|my todos?)\b/i.test(raw)){todos.push(a[1].trim());store("nova_todos",todos);return {t:"Added. "+renderTodos()};}
+   return {t:renderTodos(),chips:["Clear to-do list"]};}},
+ {re:/\b(what'?s the time|time now|current time|what time is it|what'?s the date|today'?s date|date today|what day is it)\b/i,cmd:1,run:function(){var n=new Date();return {t:"It’s "+n.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})+" on "+n.toLocaleDateString([],{weekday:"long",day:"numeric",month:"long",year:"numeric"})+"."};}},
+ {re:/./,cmd:1,run:function(m,raw){var r=calc(raw);return r!==null?{t:"That’s "+r+". 🧮"}:null;}},
+ {re:/\b(trivia|quiz me|quiz)\b/i,cmd:1,run:function(){return startQuiz();}},
+ {re:/\b(guess the number|number game)\b/i,cmd:1,run:function(){return guessGame();}},
+ {re:/\b(riddle|riddles)\b/i,cmd:1,run:function(){return riddle();}},
+ {re:/\bwould you rather\b/i,cmd:1,run:function(){return wyr();}},
+ {re:/^\s*(rock|paper|scissors)\s*$/i,cmd:1,run:function(m){return playRps(m[1]);}},
+ {re:/\b(rock paper scissors|rps)\b/i,cmd:1,run:function(){return {t:"Let’s play! ✊✋✌️ Pick one:",chips:["Rock","Paper","Scissors"]};}},
+ {re:/\b(play a game|games|game time|let'?s play|play something fun with me|bored game)\b/i,cmd:1,run:function(){return {t:"Ooh, game time! 🎮 What do you feel like?",chips:GAMES};}},
+ {re:/\b(cheer me up|joke|funny|make me laugh|laugh)\b/i,cmd:1,run:function(){return listReply("joke",JOKES,["Another one","Fun fact","Play a game"],"😄 ");}},
+ {re:/\b(quote|motivate me|motivation|inspire me|inspiration|encourage me)\b/i,cmd:1,run:function(){return listReply("quote",QUOTES,["Another one","Play something motivational","Give me advice"],"✨ ");}},
+ {re:/\b(affirmation|affirm me|pep talk|boost me|boost my mood)\b/i,cmd:1,run:function(){return listReply("aff",AFFIRM,["Another one","Compliment me","Play something upbeat"],"💪 ");}},
+ {re:/\b(compliment|say something nice|be nice to me)\b/i,cmd:1,run:function(){return listReply("comp",COMPLIMENTS,["Another one","Pep talk","Tell me a joke"],"💙 ");}},
+ {re:/\b(fun fact|random fact|tell me a fact|something interesting)\b/i,cmd:1,run:function(){return listReply("fact",FACTS,["Another one","Tell me a joke","Play a game"],"🤓 ");}},
+ {re:/\b(hungry|what should i eat|what to eat|snack ideas|dinner ideas|lunch ideas)\b/i,cmd:1,run:function(){return listReply("food",FOOD,["Another idea","Play something fun"],"🍽️ ");}},
+ {re:/\b(another idea)\b/i,cmd:1,run:function(){return last?last.run():null;}},
+ {re:/\b(flip a coin|coin flip|toss a coin|heads or tails)\b/i,cmd:1,run:function(){return {t:"🪙 It’s "+pick(["heads","tails"])+"!",chips:["Flip again"]};}},
+ {re:/\b(roll a dice|roll a die|roll dice|dice)\b/i,cmd:1,run:function(){return {t:"🎲 You rolled a "+(1+Math.floor(Math.random()*6))+"!",chips:["Roll again"]};}},
+ {re:/^(?:flip again|roll again)$/i,cmd:1,run:function(m,raw){return /flip/i.test(raw)?{t:"🪙 It’s "+pick(["heads","tails"])+"!",chips:["Flip again"]}:{t:"🎲 You rolled a "+(1+Math.floor(Math.random()*6))+"!",chips:["Roll again"]};}},
+ {re:/\b(choose|pick|decide|should i)\b.*\b(or)\b/i,cmd:1,run:function(m,raw){var s=raw.replace(/.*\b(choose|pick|decide|should i)\b( between)?/i,"").replace(/\?/g,"");var opts=s.split(/\bor\b|,/i).map(function(x){return x.trim();}).filter(Boolean);if(opts.length<2)return null;return {t:"My gut says: "+pick(opts)+". 🎯 Go with it, or if you feel disappointed, that tells you what you really wanted! (I’m only a friendly nudge, you decide.)"};}},
+ {re:/\b(music|song|songs|playlist|tune|tunes|listen|sing|play (?:me|something|some|a))\b/i,cmd:1,run:function(m,raw){return musicFlow(raw.toLowerCase());}},
+ {re:/^(?:different language|change language)$/i,cmd:1,run:function(){lastLang="";store("nova_lang","");pending=function(t){var l=findLang(t);if(l===null&&/any/.test(t))l="";if(l===null)return null;lastLang=l;store("nova_lang",l);return {t:"Got it, I’ll use "+(l||"any language")+" from now on. Want me to play something?",chips:["Play music"]};};return {t:"Which language?",chips:["Tamil","Hindi","English","Telugu","Instrumental","Any language"]};}},
+ {re:/^(?:another mood|different mood)$/i,cmd:1,run:function(){pending=function(t){return findMood(t)?musicFlow(t):null;};return {t:"Sure. What mood?",chips:["Feel good","Relaxing","Focus","Workout","Soothing","Sleep"]};}},
+ {re:/\b(another one|another tip|one more|more advice|next one)\b/i,cmd:1,run:function(){return last?last.run():{t:"Another what? Ask me for a joke, a tip or some music and I’ll keep them coming!",chips:["Tell me a joke","Give me advice","Play music"]};}},
+ {re:/^(?:give me advice|advice|i need advice|need some advice|any advice)\s*$/i,cmd:1,run:function(){return {t:"Sure. What’s on your mind?",chips:["Study","Exams","Career","Friends","Confidence","Sleep","Money"]};}},
+ {re:/^(?:i feel better|i['’]?m (?:great|good|amazing|doing great)|feeling (?:great|good)|great)$/i,cmd:1,run:function(m,raw){var was=ctx.mood;ctx.mood=null;confetti();return {t:was?"That makes me really happy"+nm()+"! 🌈 Proud of you for working through it.":"Love that! 💙 I’m glad.",chips:["Tell me a joke","Play something upbeat","Play a game"]};}},
+ {re:/^(?:i['’]?m (?:feeling )?(?:okay|ok|fine|alright|meh|so so)|feeling (?:okay|ok|meh|fine)|so so)$/i,cmd:1,run:function(){return {t:pick(["Okay is okay. 🙂 Want something to make it a little brighter?","Meh days happen. Let’s see if we can nudge it up a notch!"]),chips:["Tell me a joke","Play a game","Play something upbeat","Pep talk"]};}},
+ {re:/\b(how are you|how r u|how do you do|what'?s up|sup)\b/i,run:function(){return {t:pick(["I’m doing great, thanks for asking! 😊 More importantly, how are YOU doing?","All systems happy and running! How’s your day going?"]),node:moodRow()};}},
+ {re:/\b(who are you|your name|what are you|are you (an? )?(ai|robot|human|real|bot))\b/i,run:function(){return {t:"I’m "+cfg.botName+", a friendly companion bot that lives in your browser. 🤖💙 I’m not a human and I’m not a super-intelligent AI. I follow smart rules written by my creator, but I’ll always try my best to be a good friend."};}},
+ {re:/\b(thank you|thanks|thx|ty)\b/i,run:function(){return {t:pick(["Anytime"+nm()+"! That’s what friends are for. 💙","You’re welcome! I’m always here."]),chips:["Tell me a joke","Play a game"]};}},
+ {re:/\b(love you|you'?re the best|you are the best|good bot|you'?re awesome)\b/i,run:function(){confetti();return {t:"Aww, that made my day! 💙 You’re pretty great yourself."};}},
+ {re:/\b(bye|goodbye|good night|see you|gtg)\b/i,run:function(m,raw){return {t:/night/i.test(raw)?"Good night"+nm()+"! 🌙 Sleep well and sweet dreams.":pick(["Take care"+nm()+"! Come back anytime. 👋","Bye for now! Drink some water and rest well."])};}},
+ {re:/^\s*(hello|hi|hey|hii+|hola|vanakkam|good morning|good evening|good afternoon|yo)\b/i,run:function(){return {t:greeting()+nm()+"! 👋 I’m "+cfg.botName+". How are you feeling today?",node:moodRow()};}},
+ {re:/^\s*(lol|lmao|haha+|hehe+|😂|🤣)\s*$/i,run:function(){return {t:pick(["😄 Glad I made you smile!","Haha! Laughter is the best medicine. Want another joke?"]),chips:["Another one","Play a game"]};}},
+ {re:/^\s*(ok|okay|k|hmm+|cool|nice|fine|alright|wow|oh)\s*$/i,run:function(){return {t:pick(["🙂 I’m here whenever you want to chat, play, or listen to something.","Cool! Want to do something fun together?"]),chips:["Play a game","Play music","Tell me a joke","Daily check-in"]};}},
+ {re:/^\s*(idk|i don'?t know|dunno|nothing|nm|maybe)\s*$/i,run:function(){return {t:"That’s totally okay. 😊 Let me suggest a few things we could do:",chips:["Play a game","Play music","Tell me a fun fact","Pep talk","Daily check-in"]};}},
+ {re:/^\s*(yes|yeah|yep|yup|sure|please|definitely)\s*$/i,run:function(){return {t:"Great! 😊 What would you like to do?",chips:["Play a game","Play music","Give me advice","Tell me a joke"]};}},
+ {re:/^\s*(no|nope|nah|not really)\s*$/i,run:function(){return {t:"No worries! I’m here if you change your mind. 🙂",chips:["Tell me a joke","Play a game"]};}}
+];
+var NAME_RE=/(?:my name is|call me|i am called|i['’]?m called)\s+([a-z][a-z' ]{0,20})/i;
+
+function lifeReply(text){
+  var mood=null,topic=null,i;
+  for(i=0;i<MOODS.length;i++)if(MOODS[i].re.test(text)){mood=MOODS[i];break;}
+  for(i=0;i<TOPICS.length;i++)if(TOPICS[i].re.test(text)){topic=TOPICS[i];break;}
+  if(!mood&&!topic)return null;
+  var parts=[],chips,fx=false;
+  if(mood){parts.push(nextOf("m_"+mood.id,mood.lines));chips=mood.chips;ctx.mood=mood.neg?mood.id:null;fx=!!mood.fx;}
+  if(topic){parts.push((mood?"Here’s something that might help: ":"")+nextOf("tip_"+topic.id,topic.tips));last={run:function(){return adviceReply(topic);}};chips=mood?chips:["Another tip","Play some music","Tell me a joke"];}
+  else last=null;
+  return {t:parts.join("\n\n"),chips:chips,confetti:fx};
+}
+
+function handle(raw,viaNlp){
+  var low=raw.toLowerCase().trim();
+  if(CRISIS.test(raw)){pending=null;return crisisReply();}
+  if(pending&&/^(stop|quit|exit|cancel|enough|never ?mind|skip|menu|back)$/.test(low)){pending=null;return {t:"No problem! 🙂 What would you like to do next?",chips:["Play a game","Play music","Give me advice","Tell me a joke"]};}
+  if(pending){var p=pending;pending=null;var r0=p(low,raw);if(r0)return r0;}
+  var nm1=NAME_RE.exec(raw);if(nm1)return setName(raw,nm1);
+  var life=lifeReply(low);
+  for(var i=0;i<INTENTS.length;i++){
+    var it=INTENTS[i];
+    if(life&&!it.cmd)continue;
+    var m=it.re.exec(raw);
+    if(m){var r=it.run(m,raw);if(r)return r;}
+  }
+  if(life)return life;
+  if(!viaNlp&&NLP.ready){
+    var c=NLP.classify(raw);
+    if(c&&c.p>=NLP.threshold&&NLP_MAP[c.label]){
+      var label=c.label,note="Understood as \u2018"+label+"\u2019 ("+Math.round(c.p*100)+"% sure) by the learned model";
+      if(c.p<0.45){
+        pending=function(t2){
+          if(/^(yes|yeah|yep|yup|sure|correct|right|ya)\b/.test(t2)){var r2=handle(NLP_MAP[label],true);if(typeof r2==="string")r2={t:r2};r2.note=note+" (you confirmed)";return r2;}
+          if(/^(no|nope|nah|something else|not really)\b/.test(t2))return {t:"Okay, thanks for telling me. Could you say it another way? \ud83d\ude42",chips:["Play a game","Give me advice","Play music","What can you do?"]};
+          return null;
+        };
+        return {t:"I want to get this right. Did you mean "+FRIENDLY[label]+"?",chips:["Yes","Something else"],note:note};
+      }
+      var rr=handle(NLP_MAP[label],true);
+      if(typeof rr==="string")rr={t:rr};
+      rr.note=note;
+      return rr;
+    }
+  }
+  return {t:pick(["Hmm, I’m not sure I understood that, but I’m listening. 🙂 Want to tell me more, or try one of these?","I’m a simple bot, so I may have missed that. I can chat, play games, give advice, suggest music and more. What would you like?"]),chips:["Play a game","Give me advice","Play music","What can you do?"]};
+}
+
+var idleT=null,nudges=0;
+function resetIdle(){clearTimeout(idleT);if(nudges<2)idleT=setTimeout(function(){nudges++;var m=pick(["Still here if you want to chat"+nm()+". 🙂 Want a joke or a game?","Psst… take a sip of water and stretch for a moment. 💧 Want to play something?"]);add(m,"bot",{chips:["Tell me a joke","Play a game","Play music"]});speak(m);},120000);}
+
+function ask(text){
+  text=(text||"").trim();if(!text)return;
+  if(synth)synth.cancel();
+  add(text,"me");resetIdle();
+  var t=typingBubble();
+  var r=handle(text);if(typeof r==="string")r={t:r};
+  var delay=Math.min(1100,400+(r.t||"").length*4);
+  setTimeout(function(){
+    t.remove();hdr.classList.remove("thinking");
+    add(r.t,"bot",{links:r.links,chips:r.chips,node:r.node,note:r.note});
+    if(r.confetti)confetti();
+    speak(r.t);
+  },delay);
+}
+
+/* ---------- top chips, input ---------- */
+var TOP=["Daily check-in","Play a game","Play music","Give me advice","Pep talk","Breathing exercise","Tell me a joke","Focus timer","Gratitude moment","Fun fact"];
+(function(){var c=$("chips");TOP.forEach(function(x){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=x;b.addEventListener("click",function(){ask(x);});c.appendChild(b);});})();
+var q=$("q");
+$("go").addEventListener("click",function(){var v=q.value;q.value="";ask(v);q.focus();});
+q.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();var v=q.value;q.value="";ask(v);}});
+
+/* ---------- settings ---------- */
+var dlg=$("dlg"),fields=$("fields");
+function field(id,label,value,type){var l=document.createElement("label");l.textContent=label;l.htmlFor=id;var i=document.createElement("input");i.id=id;i.type=type||"text";i.value=value;fields.appendChild(l);fields.appendChild(i);return i;}
+$("settingsBtn").addEventListener("click",function(){
+  fields.innerHTML="";
+  field("f_bot","Assistant name",cfg.botName);field("f_user","Your name",cfg.userName);
+  if(synth){
+    var l=document.createElement("label");l.textContent="Voice";l.htmlFor="f_voice";var s=document.createElement("select");s.id="f_voice";
+    var o0=document.createElement("option");o0.value="";o0.textContent="Browser default";s.appendChild(o0);
+    voices.forEach(function(v){var o=document.createElement("option");o.value=v.voiceURI;o.textContent=v.name+" ("+v.lang+")";if(v.voiceURI===cfg.voiceURI)o.selected=true;s.appendChild(o);});
+    fields.appendChild(l);fields.appendChild(s);
+    var r=field("f_rate","Speaking speed",cfg.rate,"range");r.min=".6";r.max="1.5";r.step=".1";
+  }
+  var ll=document.createElement("label");ll.textContent="Microphone language";ll.htmlFor="f_mic";var ms=document.createElement("select");ms.id="f_mic";
+  [["en-IN","English (India)"],["en-US","English (US)"],["en-GB","English (UK)"],["ta-IN","Tamil"],["hi-IN","Hindi"],["te-IN","Telugu"]].forEach(function(p){var o=document.createElement("option");o.value=p[0];o.textContent=p[1];if(p[0]===cfg.micLang)o.selected=true;ms.appendChild(o);});
+  fields.appendChild(ll);fields.appendChild(ms);
+  var dl=document.createElement("label");dl.htmlFor="f_debug";dl.textContent="Show how Nova understood me (learned model details)";
+  var dc=document.createElement("input");dc.type="checkbox";dc.id="f_debug";dc.checked=!!cfg.debug;dc.style.width="auto";
+  fields.appendChild(dl);fields.appendChild(dc);
+  dlg.showModal();
+});
+$("cancel").addEventListener("click",function(){dlg.close();});
+$("save").addEventListener("click",function(){
+  var v=function(id){var e=$(id);return e?e.value.trim():"";};
+  if(v("f_bot"))cfg.botName=v("f_bot");cfg.userName=v("f_user");
+  if($("f_voice"))cfg.voiceURI=$("f_voice").value;
+  if($("f_rate"))cfg.rate=parseFloat($("f_rate").value)||1;
+  cfg.micLang=$("f_mic").value;
+  if($("f_debug"))cfg.debug=$("f_debug").checked;
+  save();applyName();dlg.close();add("Settings saved. 👍","bot");
+});
+$("wipe").addEventListener("click",function(){
+  if(!window.confirm("Erase your name, journal, to-do list and settings from this browser?"))return;
+  try{["nova_cfg","nova_todos","nova_journal","nova_lang"].forEach(function(k){localStorage.removeItem(k);});}catch(e){}
+  location.reload();
+});
+function applyName(){$("title").textContent=cfg.botName;document.title=cfg.botName+" - Your Friendly AI Companion";}
+
+/* ---------- start ---------- */
+function nameCapture(t,raw){
+  if(/^\s*(skip|later|no|nope|none)\s*$/.test(t))return {t:"No worries, I’ll just call you friend! 😊 You can tell me later with ‘call me …’. How are you feeling right now?",node:moodRow()};
+  var s=raw.replace(/^(?:hi|hello|hey)[, ]*/i,"").replace(/^(?:my name is|i am|i['’]m|im|call me|it['’]?s|this is)\s+/i,"").replace(/[^A-Za-z' ]/g,"").trim();
+  var w=s.split(/\s+/);
+  if(!s||w.length>3)return null;
+  var n=w[0];n=n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();
+  cfg.userName=n;save();confetti();
+  return {t:"Nice to meet you, "+n+"! 🎉 I’m so glad you’re here. How are you feeling right now?",node:moodRow()};
+}
+applyName();renderVoiceBtn();
+if(!cfg.userName){
+  add("Hey there! 👋 I’m "+cfg.botName+", your friendly companion. I can chat, cheer you up, play games, suggest music and even talk out loud. First things first, what should I call you?","bot",{chips:["Skip"]});
+  pending=nameCapture;
+}else{
+  add(greeting()+", "+cfg.userName+"! 👋 So good to see you. How are you feeling right now?","bot",{node:moodRow()});
+}
+resetIdle();
+if(window.__NOVA_TEST)window.__nova={handle:handle,cfg:cfg,getPending:function(){return pending;}};
+})();
+</script>
+</body>
+</html>
